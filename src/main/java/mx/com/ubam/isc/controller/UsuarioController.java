@@ -11,6 +11,7 @@ import mx.com.ubam.isc.service.UsuarioService;
 
 @RestController
 @RequestMapping("/api/usuarios")
+@CrossOrigin
 public class UsuarioController {
 
     @Autowired

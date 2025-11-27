@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro y Usuarios</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+    <div class="contenedor">
+        <h2>Registrar Nuevo Usuario</h2>
+        
+        <form id="form-registro">
+            <div class="form-group">
+                <label for="reg-nombre">Nombre de Usuario:</label>
+                <input type="text" id="reg-nombre" name="nombre" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="reg-contrasena">Contraseña:</label>
+                <input type="password" id="reg-contrasena" name="contrasena" required>
+            </div>
+            
+            <button type="submit">Registrar</button>
+        </form>
+        
+        <hr style="margin: 30px 0;">
+        
+        <h2>Usuarios Existentes</h2>
+        
+        <button id="btn-listar">Listar Usuarios</button>
+        
+        <table id="lista-usuarios">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                </tr>
+            </thead>
+            <tbody>
+                </tbody>
+        </table>
+
+        <p style="text-align: center; margin-top: 15px;">
+            ¿Ya tienes cuenta? <a href="login.html">Inicia Sesión</a>
+        </p>
+    </div>
+
+    <script>
+        const API_URL_REGISTRAR = "http://localhost:8080/api/usuarios/registrar";
+        const API_URL_LISTAR = "http://localhost:8080/api/usuarios/listar";
+
+        const formRegistro = document.getElementById('form-registro');
+        const btnListar = document.getElementById('btn-listar');
+        const tablaBody = document.querySelector('#lista-usuarios tbody');
+        
+        // 1. Manejo del Formulario de Registro (POST)
+        formRegistro.addEventListener('submit', async function(event) {
+            // Previene el comportamiento por defecto de recarga del formulario
+            event.preventDefault(); 
+
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+            
+            try {
+                // Realiza la petición POST
+                const response = await fetch(API_URL_REGISTRAR, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data), // Envía nombre y contrasena como JSON
+                });
+
+                if (response.ok) {
+                    // Muestra la alerta de éxito
+                    alert(`Registro exitoso para el usuario: ${data.nombre}.\nEl servidor respondió con el estado: ${response.status}`);
+                    // Opcional: Limpiar el formulario
+                    this.reset();
+                } else {
+                    const errorData = await response.text();
+                    alert(`Error en el Registro. Estado: ${response.status}. Mensaje del servidor: ${errorData}`);
+                }
+
+            } catch (error) {
+                console.error('Error de conexión:', error);
+                alert('Error al intentar conectar con el servidor de registro.');
+            }
+        });
+
+
+        // 2. Función para obtener y mostrar la lista de usuarios (GET)
+        async function listarUsuarios() {
+            try {
+                const response = await fetch(API_URL_LISTAR, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error HTTP: ${response.status}`);
+                }
+
+                const usuarios = await response.json();
+                
+                // Limpiar la tabla antes de agregar nuevos datos
+                tablaBody.innerHTML = ''; 
+
+                // Llenar la tabla con los datos
+                usuarios.forEach(usuario => {
+                    const fila = document.createElement('tr');
+                    
+
+                    fila.innerHTML = `
+                        <td data-label="ID">${usuario.id}</td>
+                        <td data-label="Nombre">${usuario.nombre}</td>
+                    `;
+                    tablaBody.appendChild(fila);
+                });
+
+                if (usuarios.length === 0) {
+                    tablaBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">No hay usuarios registrados.</td></tr>';
+                }
+
+            } catch (error) {
+                console.error('Error al listar usuarios:', error);
+                tablaBody.innerHTML = '<tr><td colspan="3" style="color:red; text-align:center;">Error al cargar los usuarios.</td></tr>';
+            }
+        }
+
+        // Agregar evento al botón para listar usuarios
+        btnListar.addEventListener('click', listarUsuarios);
+    </script>
+</body>
+</html>

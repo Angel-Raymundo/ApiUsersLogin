@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login de Usuarios</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+    <div class="contenedor">
+        <h2>Iniciar Sesión</h2>
+        
+        <form id="form-login">
+            <div class="form-group">
+                <label for="nombre">Nombre de Usuario:</label>
+                <input type="text" id="nombre" name="nombre" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="contrasena">Contraseña:</label>
+                <input type="password" id="contrasena" name="contrasena" required>
+            </div>
+            
+            <button type="submit">Entrar</button>
+        </form>
+        
+        <p style="text-align: center; margin-top: 15px;">
+            ¿No tienes cuenta? <a href="registro.html">Regístrate aquí</a>
+        </p>
+    </div>
+
+    <script>
+        const API_URL_LOGIN = "http://localhost:8080/api/usuarios/login";
+        const formLogin = document.getElementById('form-login');
+
+        formLogin.addEventListener('submit', async function(event) {
+            // Previene el comportamiento por defecto de recarga del formulario
+            event.preventDefault(); 
+
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+            
+            try {
+                // Realiza la petición POST
+                const response = await fetch(API_URL_LOGIN, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data), // Envía nombre y contrasena como JSON
+                });
+
+                if (response.ok) {
+                    // Muestra la alerta de éxito
+                    alert(`Login exitoso para el usuario: ${data.nombre}.\nEl servidor respondió con el estado: ${response.status}`);
+                    // Opcional: Limpiar el formulario
+                    this.reset();
+                } else {
+                    const errorData = await response.text();
+                    alert(`Error en el Login. Estado: ${response.status}. Mensaje del servidor: ${errorData}`);
+                }
+
+            } catch (error) {
+                console.error('Error de conexión:', error);
+                alert('Error al intentar conectar con el servidor de login.');
+            }
+        });
+    </script>
+</body>
+</html>

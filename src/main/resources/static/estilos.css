@@ -1,0 +1,139 @@
+/* estilos.css */
+
+:root {
+    --color-primario: #007bff;
+    --color-secundario: #6c757d;
+    --color-fondo: #f8f9fa;
+    --color-tarjeta: #ffffff;
+    --color-texto: #343a40;
+    --sombra-caja: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    line-height: 1.6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.contenedor {
+    background-color: var(--color-tarjeta);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: var(--sombra-caja);
+    width: 90%;
+    max-width: 450px;
+}
+
+h2 {
+    text-align: center;
+    color: var(--color-primario);
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: var(--color-primario);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Estilos específicos para la tabla de usuarios */
+#lista-usuarios {
+    margin-top: 30px;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#lista-usuarios th, #lista-usuarios td {
+    border: 1px solid #dee2e6;
+    padding: 8px;
+    text-align: left;
+}
+
+#lista-usuarios th {
+    background-color: var(--color-primario);
+    color: white;
+}
+
+/* Responsividad */
+@media (max-width: 600px) {
+    .contenedor {
+        padding: 20px;
+    }
+    
+    #lista-usuarios, #lista-usuarios thead, #lista-usuarios tbody, #lista-usuarios th, #lista-usuarios td, #lista-usuarios tr {
+        display: block;
+    }
+    
+    #lista-usuarios thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    
+    #lista-usuarios tr {
+        margin-bottom: 10px;
+        border: 1px solid #dee2e6;
+        display: block;
+    }
+    
+    #lista-usuarios td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+        text-align: right;
+    }
+    
+    #lista-usuarios td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+        text-align: left;
+        color: var(--color-primario);
+    }
+}
